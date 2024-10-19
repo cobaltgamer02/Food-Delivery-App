@@ -1,28 +1,22 @@
 import "package:flutter/material.dart";
+import "package:foodel/models/food.dart";
 
 class MyTabBar extends StatelessWidget {
   final TabController tabController;
   const MyTabBar({super.key, required this.tabController});
 
+  List<Tab> _buildCategoryTabs() {
+    return FoodCategory.values.map((category) {
+      return Tab(
+        text: category.toString().split('.').last,
+      );
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return TabBar(
-      tabs: const [
-        //1st Tab
-        Tab(
-          icon: Icon(Icons.home),
-        ),
-
-        //2nd Tab
-        Tab(
-          icon: Icon(Icons.settings),
-        ),
-
-        //3rd Tab
-        Tab(
-          icon: Icon(Icons.person),
-        ),
-      ],
+      tabs: _buildCategoryTabs(),
       controller: tabController,
     );
   }
