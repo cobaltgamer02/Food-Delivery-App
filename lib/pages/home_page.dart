@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:foodel/components/my_current_location.dart";
 import "package:foodel/components/my_desciption_box.dart";
 import "package:foodel/components/my_drawer.dart";
+import "package:foodel/components/my_food_tile.dart";
 import "package:foodel/components/my_sliver_app_bar.dart";
 import "package:foodel/components/my_tab_bar.dart";
 import "package:foodel/models/food.dart";
@@ -42,14 +43,19 @@ class _HomePageState extends State<HomePage>
   //return list of foods in given category
   List<Widget> getFoodInThisCategory(List<Food> fullMenu) {
     return FoodCategory.values.map((category) {
+
+      //get category menu
       List<Food> categoryMenu = _filterMenuByCategory(category, fullMenu);
       return ListView.builder(
         itemCount: categoryMenu.length,
+        padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(categoryMenu[index].name),
-          );
+          //get individual food
+          final food = categoryMenu[index];
+          
+          //return food tile UI
+          return FoodTile(food: food, onTap: (){});
         },
       );
     }).toList();
