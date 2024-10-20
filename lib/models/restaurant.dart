@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:foodel/models/cart_item.dart';
 import 'package:foodel/models/food.dart';
 
-class Restaurant extends ChangeNotifier {
+class Restaurant extends ChangeNotifier { 
   final List<Food> _menu = [
     //burgers
     Food(
@@ -73,10 +75,10 @@ class Restaurant extends ChangeNotifier {
         Addons(name: "Avacado", price: 2.99),
       ],
     ),
-    
+
     //salads
     Food(
-      name: "Classic Caesar Elegance",
+      name: "Caesar Elegance",
       description:
           "Crisp romaine lettuce tossed in creamy Caesar dressing, topped with shaved parmesan, crunchy croutons, and a drizzle of olive oil.",
       imagePath: "lib/images/salads/ceasar.jpg",
@@ -104,7 +106,7 @@ class Restaurant extends ChangeNotifier {
     ),
 
     Food(
-      name: "Lamb & Greens Symphony",
+      name: "Lamb & Greens",
       description:
           "Sliced grilled sirloin lamb on a bed of mixed greens, with roasted red peppers, feta, and a balsamic glaze.",
       imagePath: "lib/images/salads/signature.jpg",
@@ -115,10 +117,10 @@ class Restaurant extends ChangeNotifier {
         Addons(name: "Bread", price: 2.99),
       ],
     ),
-   
+
     //sides
     Food(
-      name: "Golden Fried Rice Feast",
+      name: "Golden Fried Rice",
       description:
           "Wok-fried jasmine rice with veggies, scrambled egg, and your choice of chicken, pork, or shrimp, seasoned with soy and sesame.",
       imagePath: "lib/images/sides/friedrice.jpg",
@@ -132,7 +134,7 @@ class Restaurant extends ChangeNotifier {
     ),
 
     Food(
-      name: "Crispy Golden Fries",
+      name: "Crispy Fries",
       description:
           "Hand-cut, double-fried to perfection with a sprinkle of sea salt and served with your choice of dipping sauce.",
       imagePath: "lib/images/sides/fries.jpg",
@@ -145,7 +147,7 @@ class Restaurant extends ChangeNotifier {
     ),
 
     Food(
-      name: "Crispy Pork Medallions",
+      name: "Crispy Pork",
       description:
           "Tender pork slices, breaded and fried to a crispy perfection, served with a zesty dipping sauce.",
       imagePath: "lib/images/sides/pork.jpg",
@@ -157,7 +159,7 @@ class Restaurant extends ChangeNotifier {
     ),
 
     Food(
-      name: "Velvety Parmesan Risotto",
+      name: "Velvety Risotto",
       description:
           "Creamy and rich risotto cooked with a touch of butter, Parmesan cheese, and a sprinkle of fresh herbs.",
       imagePath: "lib/images/sides/rissoto.jpg",
@@ -168,10 +170,10 @@ class Restaurant extends ChangeNotifier {
         Addons(name: "Chicken", price: 1.49),
       ],
     ),
-    
+
     //desserts
     Food(
-      name: "Decadent Chocolate Chip Delights",
+      name: "Choco-Chip Cookies",
       description:
           "Soft-baked cookies packed with rich chocolate chips and a hint of vanilla. Perfectly gooey on the inside.",
       imagePath: "lib/images/desserts/chocoChip.jpg",
@@ -186,7 +188,7 @@ class Restaurant extends ChangeNotifier {
     ),
 
     Food(
-      name: "Velvet Chocolate-Raspberry Tart",
+      name: "Velvet Choco-Raspberry Tart",
       description:
           "A delicate tart shell filled with rich, velvety chocolate ganache and topped with fresh raspberries, drizzled with a sweet raspberry syrup for the perfect balance of sweet and tangy.",
       imagePath: "lib/images/desserts/chocoRasTart.jpg",
@@ -201,7 +203,7 @@ class Restaurant extends ChangeNotifier {
     ),
 
     Food(
-      name: "Morning Glory Muffins",
+      name: "Morning Muffins",
       description:
           "Light, fluffy muffins with a golden-brown crust, available in blueberry, banana nut, or chocolate chip flavors.",
       imagePath: "lib/images/desserts/muffins.jpg",
@@ -216,7 +218,7 @@ class Restaurant extends ChangeNotifier {
     ),
 
     Food(
-      name: "Velvet Raspberry Cheesecake",
+      name: "Raspberry Cheesecake",
       description:
           "Silky smooth cheesecake on a buttery graham cracker crust, topped with a fresh raspberry compote and a drizzle of raspberry syrup.",
       imagePath: "lib/images/desserts/raspCheese.jpg",
@@ -231,7 +233,7 @@ class Restaurant extends ChangeNotifier {
     ),
 
     Food(
-      name: "Cinnamon Sugar Swirls",
+      name: "Cinnamon Donuts",
       description:
           "Soft, melt-in-your-mouth donuts rolled in cinnamon sugar with a hint of vanilla glaze.",
       imagePath: "lib/images/desserts/sugarDonuts.jpg",
@@ -244,7 +246,7 @@ class Restaurant extends ChangeNotifier {
         Addons(name: "Caramel", price: 1.99),
       ],
     ),
-    
+
     //drinks
     Food(
       name: "Apricot Nectar",
@@ -292,7 +294,7 @@ class Restaurant extends ChangeNotifier {
     ),
 
     Food(
-      name: "Citrus Spark Lemonade",
+      name: "Fresh Lemonade",
       description:
           "A refreshingly tart lemonade made with real lemons and a touch of sweetness, served ice-cold.",
       imagePath: "lib/images/drinks/lemon.jpg",
@@ -307,7 +309,7 @@ class Restaurant extends ChangeNotifier {
     ),
 
     Food(
-      name: "Peachy Keen Iced Tea",
+      name: "Peach Iced Tea",
       description:
           "A refreshing iced tea infused with ripe peaches and a hint of honey. Perfect for a summer day.",
       imagePath: "lib/images/drinks/peach.jpg",
@@ -324,16 +326,85 @@ class Restaurant extends ChangeNotifier {
 
 //getters
   List<Food> get menu => _menu;
+  List<CartItem> get cart => _cart;
 
   //operations
-      //add to cart
-      //remove from cart
-      //total price
-      //total items
-      //clear cart
+  //create user cart
+  final List<CartItem> _cart = [];
+  //add to cart
+  void addToCart(Food food, List<Addons> selectedAddons) {
+    //see if there is a cart item already with the same food and selected addons
+    CartItem? cartItem = _cart.firstWhereOrNull((item) {
+      //check if the food are the same
+      bool isSameFood = item.food == food;
+      //check if the list of selected addonsare the same
+      bool isSameAddons =
+          ListEquality().equals(item.selectedAddons, selectedAddons);
+
+      return isSameAddons && isSameFood;
+    });
+
+    //if item already exists, increase its quantity
+    if (cartItem != null) {
+      cartItem.quantity++;
+    }
+
+    //otherwise, add a new cart item
+    else {
+      _cart.add(
+        CartItem(
+          food: food,
+          selectedAddons: selectedAddons,
+        ),
+      );
+    }
+    notifyListeners();
+  }
+
+  //remove from cart
+  void removeFromCart(CartItem cartItem) {
+    int cartIndex = _cart.indexOf(cartItem);
+
+    if (cartIndex != -1) {
+      if (_cart[cartIndex].quantity > 1) {
+        _cart[cartIndex].quantity--;
+      } else {
+        _cart.removeAt(cartIndex);
+      }
+    }
+    notifyListeners();
+  }
+
+  //total price
+  double getTotalPrice() {
+    double total = 0.0;
+    for (CartItem cartItem in _cart) {
+      double itemTotal = cartItem.food.price;
+      for (Addons addon in cartItem.selectedAddons) {
+        itemTotal += addon.price;
+      }
+      total += itemTotal * cartItem.quantity;
+    }
+    return total;
+  }
+
+  //total items
+  int getTotalItemCount() {
+    int totalItemCount = 0;
+    for (CartItem cartItem in _cart) {
+      totalItemCount += cartItem.quantity;
+    }
+    return totalItemCount;
+  }
+
+  //clear cart
+  void clearCart() {
+    _cart.clear();
+    notifyListeners();
+  }
 
   //helpers
-      //generate a reciept
-      //fromat double value into memory
-      //format list of addons into a string summary
+  //generate a reciept
+  //fromat double value into memory
+  //format list of addons into a string summary
 }

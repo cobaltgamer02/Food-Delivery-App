@@ -7,6 +7,7 @@ import "package:foodel/components/my_sliver_app_bar.dart";
 import "package:foodel/components/my_tab_bar.dart";
 import "package:foodel/models/food.dart";
 import "package:foodel/models/restaurant.dart";
+import "package:foodel/pages/food_page.dart";
 import "package:provider/provider.dart";
 
 class HomePage extends StatefulWidget {
@@ -43,7 +44,6 @@ class _HomePageState extends State<HomePage>
   //return list of foods in given category
   List<Widget> getFoodInThisCategory(List<Food> fullMenu) {
     return FoodCategory.values.map((category) {
-
       //get category menu
       List<Food> categoryMenu = _filterMenuByCategory(category, fullMenu);
       return ListView.builder(
@@ -53,9 +53,17 @@ class _HomePageState extends State<HomePage>
         itemBuilder: (context, index) {
           //get individual food
           final food = categoryMenu[index];
-          
+
           //return food tile UI
-          return FoodTile(food: food, onTap: (){});
+          return FoodTile(
+            food: food,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FoodPage(food: food),
+              ),
+            ),
+          );
         },
       );
     }).toList();
